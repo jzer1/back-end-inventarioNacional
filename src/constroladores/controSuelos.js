@@ -1,5 +1,15 @@
 const db = require('../BD/connection')
 
+exports.obtenerTodosSuelo = async (res) => {
+  try {
+    const rows = await db.query('SELECT * FROM suelo');
+    res.json(rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error del servidor' });
+  }
+}
+
 
 exports.obtenerSuelo = async (req,res)=>{
         const { id } = req.params; 

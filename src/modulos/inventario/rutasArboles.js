@@ -2,6 +2,8 @@ const express = require('express')
 const router = express.Router()
 const controladorArboles = require('../../constroladores/controArboles')
 
+
+router.get('/obtener-todos-arboles',controladorArboles.obtenerTodosArboles)
 router.get('/obtener-arboles/:id', controladorArboles.obtenerArboles)
 router.get('/obtener-especie-arboles/:id/:especie', controladorArboles.obtenerEspecieArbol)
 router.get('/obtener-subParcela-arboles/:id/:idSub', controladorArboles.obtenerSubParcelaArbol)
