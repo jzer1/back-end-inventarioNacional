@@ -2,7 +2,7 @@ const db = require('../BD/connection');
 
 
 //obtiene todos los id de los conglomerados 
-exports.obtenerIdConglomerado = async (res) => {
+exports.obtenerIdConglomerado = async (req, res) => {
   try {
     const rows = await db.query('SELECT id FROM conglomerado');
     res.json(rows);
@@ -10,7 +10,8 @@ exports.obtenerIdConglomerado = async (res) => {
     console.error(error);
     res.status(500).json({ error: 'Error del servidor' });
   }
-}
+};
+
 
 //obtiene todo el contenido del conglomerado por el id
 exports.obtenerConglomerado = async (req, res) => {

@@ -1,6 +1,6 @@
 const db = require('../BD/connection');
 
-exports.obtenerTodosArboles = async (res) => {
+exports.obtenerTodosArboles = async (req, res) => {
   try {
     const rows = await db.query('SELECT * FROM arbol');
     res.json(rows);
@@ -8,7 +8,8 @@ exports.obtenerTodosArboles = async (res) => {
     console.error(error);
     res.status(500).json({ error: 'Error del servidor' });
   }
-}
+};
+
 
 //consulta los arboles de un conglomerado 
 exports.obtenerArboles = async(req, res)=>{
