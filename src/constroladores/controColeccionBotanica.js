@@ -2,7 +2,7 @@ const db = require('../BD/connection')
 
 exports.obtenerTodosColeccionBotanico = async (req, res) => {
   try {
-    const rows = await db.query('SELECT * FROM coleccionbotanico');
+    const rows = await db.query('SELECT * FROM coleccionbotanica');
     res.json(rows);
   } catch (error) {
     console.error(error);

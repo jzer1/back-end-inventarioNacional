@@ -3,9 +3,9 @@ const router = express.Router()
 const controladorColeccionBotanico = require('../../constroladores/controColeccionBotanica')
 
 router.get('/obtener-todos-ColeccionBotanico',controladorColeccionBotanico.obtenerTodosColeccionBotanico)
-router.get('/obtener-ColeccionBotanico', controladorColeccionBotanico.obtenerCantidadColeccionBotanico)
+router.get('/obtener-ColeccionBotanico', controladorColeccionBotanico.obtenerColeccionBotanico)
 router.get('/obtener-subParcela-ColeccionBotanico',controladorColeccionBotanico.obtenerSubParcelasColeccionBotanico)
 router.get('/obtener-cantidad-ColeccionBotanico',controladorColeccionBotanico.obtenerCantidadColeccionBotanico)
-router.post('agregar-ColeccionBotanico',controladorColeccionBotanico.agregarColeccionBotanico)
+router.post('/agregar-ColeccionBotanico',controladorColeccionBotanico.agregarColeccionBotanico)
 
 module.exports =router;
