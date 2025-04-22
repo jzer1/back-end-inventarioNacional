@@ -45,9 +45,10 @@ exports.obtenerRegionConglomerado = async (req, res) => {
   try {
     // Ejecutamos la consulta con la región sanitizada
     const [rows] = await db.query(
-      'SELECT * FROM conglomerado WHERE TRIM(UPPER(region)) = TRIM(UPPER(?))',
-      [regionSanitizada]
+      'SELECT * FROM conglomerado WHERE UPPER(region) LIKE UPPER(?)',
+      [`%${regionSanitizada}%`]
     );
+    
 
     console.log("Cantidad de conglomerados encontrados:", rows.length);
     console.log("Resultado de la consulta:", rows);
