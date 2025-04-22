@@ -40,6 +40,7 @@ exports.obtenerRegionConglomerado = async (req, res) => {
     }
   
     try {
+      console.log("Región recibida:", region);
       const [rows] = await db.query('SELECT * FROM CONGLOMERADO WHERE TRIM(UPPER(REGION)) = TRIM(UPPER(?))', [region]);
       res.json(rows);
     } catch (error) {
@@ -57,7 +58,7 @@ exports.obtenerPosEstratoConglomerado = async (req, res) => {
     }
   
     try {
-      const rows = await db.query('SELECT ID, LONGITUD, LATITUD FROM CONGLOMERADO WHERE POSESTRATO = ?', [pos]);
+      const rows = await db.query('SELECT * FROM CONGLOMERADO WHERE POSESTRATO = ?', [pos]);
       res.json(rows);
     } catch (error) {
       console.error(error);
