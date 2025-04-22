@@ -40,7 +40,7 @@ exports.obtenerRegionConglomerado = async (req, res) => {
     }
   
     try {
-      const rows = await db.query('SELECT * FROM CONGLOMERADO WHERE REGION = ?', [region]);
+      const [rows] = await db.query('SELECT * FROM CONGLOMERADO WHERE TRIM(UPPER(REGION)) = TRIM(UPPER(?))', [region]);
       res.json(rows);
     } catch (error) {
       console.error(error);
