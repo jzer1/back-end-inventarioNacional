@@ -45,7 +45,16 @@ exports.obtenerRegionConglomerado = async (req, res) => {
           'SELECT * FROM conglomerado WHERE TRIM(UPPER(region)) = TRIM(UPPER(?))',
           [region]
       );
+      console.log("Resultado de la consulta:", rows);
 
+      if (!rows || !Array.isArray(rows)) {
+        return res.status(500).json({
+            error: true,
+            mensaje: 'Error inesperado al consultar los datos',
+            detalle: 'La respuesta de la base de datos no es válida'
+        });
+    }
+    
       res.status(200).json({
           error: false,
           cantidad: rows.length,
