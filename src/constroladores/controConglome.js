@@ -33,20 +33,28 @@ exports.obtenerConglomerado = async (req, res) => {
 
 //obtiene todos los conglomerados de una region
 exports.obtenerRegionConglomerado = async (req, res) => {
-    const { region } = req.params;
-  
-    if (!region) {
-      return res.status(400).json({ error: 'Falta el campo región' });
-    }
-  
-    try {
+  const { region } = req.params;
+
+  if (!region) {
+      return res.status(400).json({ error: true, mensaje: 'Falta el campo región' });
+  }
+
+  try {
       console.log("Región recibida:", region);
-      const [rows] = await db.query('SELECT * FROM CONGLOMERADO WHERE TRIM(UPPER(REGION)) = TRIM(UPPER(?))', [region]);
-      res.json(rows);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Error del servidor' });
-    }
+      const [rows] = await db.query(
+          'SELECT * FROM CONGLOMERADO WHERE TRIM(UPPER(REGION)) = TRIM(UPPER(?))',
+          [region]
+      );
+
+      res.status(200).json({
+          error: false,
+          cantidad: rows.length,
+          datos: rows
+      });
+  } catch (error) {
+      console.error("Error al consultar la base de datos:", error.message);
+      res.status(500).json({ error: true, mensaje: 'Error del servidor', detalle: error.message });
+   }
 }
 
 //obtiene todos los conglomerados por su posEstrato 
