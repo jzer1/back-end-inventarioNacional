@@ -36,35 +36,40 @@ exports.obtenerRegionConglomerado = async (req, res) => {
   const { region } = req.params;
 
   if (!region) {
-      return res.status(400).json({ error: true, mensaje: 'Falta el campo región' });
+    return res.status(400).json({ error: true, mensaje: 'Falta el campo región' });
   }
 
-  try {
-      console.log("Región recibida:", region);
-      const [rows] = await db.query(
-          'SELECT * FROM conglomerado WHERE TRIM(UPPER(region)) = TRIM(UPPER(?))',
-          [region]
-      );
-      console.log("Resultado de la consulta:", rows);
+  const regionSanitizada = region.trim();  // Elimina espacios y saltos de línea
+  console.log("Región sanitizada:", regionSanitizada);
 
-      if (!rows || !Array.isArray(rows)) {
-        return res.status(500).json({
-            error: true,
-            mensaje: 'Error inesperado al consultar los datos',
-            detalle: 'La respuesta de la base de datos no es válida'
-        });
-    }
-    
-      res.status(200).json({
-          error: false,
-          cantidad: rows.length,
-          datos: rows
+  try {
+    // Ejecutamos la consulta con la región sanitizada
+    const [rows] = await db.query(
+      'SELECT * FROM conglomerado WHERE TRIM(UPPER(region)) = TRIM(UPPER(?))',
+      [regionSanitizada]
+    );
+
+    console.log("Resultado de la consulta:", rows);
+
+    if (!rows || rows.length === 0) {
+      return res.status(404).json({
+        error: true,
+        mensaje: 'No se encontraron datos para la región solicitada',
+        detalle: `Consulta para la región '${regionSanitizada}' no devolvió resultados.`
       });
+    }
+
+    res.status(200).json({
+      error: false,
+      cantidad: rows.length,
+      datos: rows
+    });
   } catch (error) {
-      console.error("Error al consultar la base de datos:", error.message);
-      res.status(500).json({ error: true, mensaje: 'Error del servidor', detalle: error.message });
-   }
-}
+    console.error("Error al consultar la base de datos:", error.message);
+    return res.status(500).json({ error: true, mensaje: 'Error del servidor', detalle: error.message });
+  }
+};
+
 
 //obtiene todos los conglomerados por su posEstrato 
 exports.obtenerPosEstratoConglomerado = async (req, res) => {
