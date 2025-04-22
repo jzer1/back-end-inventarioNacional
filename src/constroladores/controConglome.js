@@ -49,6 +49,7 @@ exports.obtenerRegionConglomerado = async (req, res) => {
       [regionSanitizada]
     );
 
+    console.log("Cantidad de conglomerados encontrados:", rows.length);
     console.log("Resultado de la consulta:", rows);
 
     if (!rows || rows.length === 0) {
