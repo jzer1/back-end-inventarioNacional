@@ -50,65 +50,83 @@ exports.obtenerConglomeradoPorRegion = async(req,res)=>{
 
 }
 //
-
 //obtiene todos los conglomerados de una region
-exports.obtenerRegionConglomerado = async (req, res) => {
-  const { region } = req.params;
+// exports.obtenerRegionConglomerado = async (req, res) => {
+//   const { region } = req.params;
 
-  if (!region) {
-    return res.status(400).json({ error: true, mensaje: 'Falta el campo región' });
-  }
+//   if (!region) {
+//     return res.status(400).json({ error: true, mensaje: 'Falta el campo región' });
+//   }
 
-  const regionSanitizada = region.trim();  // Elimina espacios y saltos de línea
-  console.log("Región sanitizada:", regionSanitizada);
+//   const regionSanitizada = region.trim();  // Elimina espacios y saltos de línea
+//   console.log("Región sanitizada:", regionSanitizada);
 
-  try {
-    // Ejecutamos la consulta con la región sanitizada
-    const [rows] = await db.query(
-      'SELECT * FROM conglomerado WHERE UPPER(region) LIKE UPPER(?)',
-      [`%${regionSanitizada}%`]
-    );
+//   try {
+//     // Ejecutamos la consulta con la región sanitizada
+//     const [rows] = await db.query(
+//       'SELECT * FROM conglomerado WHERE UPPER(region) LIKE UPPER(?)',
+//       [`%${regionSanitizada}%`]
+//     );
     
 
-    console.log("Cantidad de conglomerados encontrados:", rows.length);
-    console.log("Resultado de la consulta:", rows);
+//     console.log("Cantidad de conglomerados encontrados:", rows.length);
+//     console.log("Resultado de la consulta:", rows);
 
-    if (!rows || rows.length === 0) {
-      return res.status(404).json({
-        error: true,
-        mensaje: 'No se encontraron datos para la región solicitada',
-        detalle: `Consulta para la región '${regionSanitizada}' no devolvió resultados.`
-      });
-    }
+//     if (!rows || rows.length === 0) {
+//       return res.status(404).json({
+//         error: true,
+//         mensaje: 'No se encontraron datos para la región solicitada',
+//         detalle: `Consulta para la región '${regionSanitizada}' no devolvió resultados.`
+//       });
+//     }
 
-    res.status(200).json({
-      error: false,
-      cantidad: rows.length,
-      datos: rows
-    });
-  } catch (error) {
-    console.error("Error al consultar la base de datos:", error.message);
-    return res.status(500).json({ error: true, mensaje: 'Error del servidor', detalle: error.message });
-  }
-};
+//     res.status(200).json({
+//       error: false,
+//       cantidad: rows.length,
+//       datos: rows
+//     });
+//   } catch (error) {
+//     console.error("Error al consultar la base de datos:", error.message);
+//     return res.status(500).json({ error: true, mensaje: 'Error del servidor', detalle: error.message });
+//   }
+// };
 
 
 //obtiene todos los conglomerados por su posEstrato 
-exports.obtenerPosEstratoConglomerado = async (req, res) => {
-    const { pos } = req.params;
+// exports.obtenerPosEstratoConglomerado = async (req, res) => {
+//     const { pos } = req.params;
   
-    if (!pos) {
-      return res.status(400).json({ error: 'Falta el campo posestrato' });
-    }
+//     if (!pos) {
+//       return res.status(400).json({ error: 'Falta el campo posestrato' });
+//     }
   
-    try {
-      const rows = await db.query('SELECT * FROM CONGLOMERADO WHERE POSESTRATO = ?', [pos]);
-      res.json(rows);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Error del servidor' });
-    }
+//     try {
+//       const rows = await db.query('SELECT * FROM CONGLOMERADO WHERE POSESTRATO = ?', [pos]);
+//       res.json(rows);
+//     } catch (error) {
+//       console.error(error);
+//       res.status(500).json({ error: 'Error del servidor' });
+//     }
+// }
+
+exports.obtenerConglomeradoPorPostEstrato = async(req,res)=>{
+  const {PostEstrato} = req.params; 
+
+  if (!PostEstrato) {
+      return res.status(400).json({ error: 'Falta el campo PostEstrato' });
+  }
+
+
+  try {
+    const rows = await db.query('select * from conglomerado where posEstrato = = ?', [PostEstrato]);
+    res.json(rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error del servidor' });
+  }
+
 }
+
 
 //obtiene todas las subParcelas de un conglomerado 
 exports.obtenerSubParcelasConglomerado = async (req,res)=>{
