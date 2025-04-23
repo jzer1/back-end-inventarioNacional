@@ -10,4 +10,7 @@ router.post('/agregar-conglomerado/:latitud/:longitud/:observaciones/:region/:po
 //
 router.get('/ObtenerConglomeradoPorRegion/:region',controladorConglomerado.obtenerConglomeradoPorRegion)
 router.get('/ObtenerConglomeradoPorPostEstrato/:PostEstrato',controladorConglomerado.obtenerConglomeradoPorPostEstrato)
+//
+router.get('/ObtenerConglomeradoPorPostEstratoYRegion/:PostEstrato/:region', controladorConglomerado.obtenerConglomeradoPorPostEstratoYRegion)
+
 module.exports = router
