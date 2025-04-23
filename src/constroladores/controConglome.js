@@ -31,6 +31,26 @@ exports.obtenerConglomerado = async (req, res) => {
     }
 }
 
+///
+exports.obtenerConglomeradoPorRegion = async(req,res)=>{
+  const {region} = req.params; 
+
+  if (!region) {
+      return res.status(400).json({ error: 'Falta el campo region' });
+  }
+
+
+  try {
+    const rows = await db.query('select * from conglomerado where region = ?', [region]);
+    res.json(rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error del servidor' });
+  }
+
+}
+//
+
 //obtiene todos los conglomerados de una region
 exports.obtenerRegionConglomerado = async (req, res) => {
   const { region } = req.params;
