@@ -9,5 +9,5 @@ router.get('/obtener-subparcelas-conglomerado/:id',controladorConglomerado.obten
 router.post('/agregar-conglomerado/:latitud/:longitud/:observaciones/:region/:posEstrato',controladorConglomerado.agregarConglomerado)
 //
 router.get('/ObtenerConglomeradoPorRegion/:region',controladorConglomerado.obtenerConglomeradoPorRegion)
-router.get('/ObtenerConglomeradoPorPostEstrato/:postEstrato',controladorConglomerado.obtenerConglomeradoPorPostEstrato)
+router.get('/ObtenerConglomeradoPorPostEstrato/:PostEstrato',controladorConglomerado.obtenerConglomeradoPorPostEstrato)
 module.exports = router
