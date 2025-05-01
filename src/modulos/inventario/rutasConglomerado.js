@@ -13,4 +13,5 @@ router.get('/ObtenerConglomeradoPorPostEstrato/:PostEstrato',controladorConglome
 //
 router.get('/ObtenerConglomeradoPorPostEstratoYRegion/:PostEstrato/:region', controladorConglomerado.obtenerConglomeradoPorPostEstratoYRegion)
 
+router.get('/ObtenerTodosIdConglomerados',controladorConglomerado.obtenerConglomeradoID)
 module.exports = router
