@@ -50,15 +50,15 @@ exports.obtenerEspecieArbol = async(req,res)=>{
 
 //consulta los arboles de un conglomerado por parcela
 exports.obtenerSubParcelaArbol = async(req,res)=>{
-    const { id , idParc } = req.params; 
+    const { id , Parc } = req.params; 
 
-    if (!id) {
-        return res.status(400).json({ error: 'Falta el campo posestrato' });
+    if (!id || !Parc) {
+        return res.status(400).json({ error: 'Falta el campo ' });
     }
   
 
     try {
-      const rows = await db.query('SELECT a.* FROM conglomerado c JOIN subparcela s ON c.id = s.idConglomerado  JOIN arbol a ON s.id = a.idSubparcela WHERE c.id = ? and s.id=?', [id, idParc]);
+      const rows = await db.query('SELECT a.* FROM conglomerado c JOIN subparcela s ON c.id = s.idConglomerado  JOIN arbol a ON s.id = a.idSubparcela WHERE c.id = ? and s.numero=?', [id, Parc]);
       res.json(rows);
     } catch (error) {
       console.error(error);
