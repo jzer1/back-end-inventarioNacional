@@ -19,7 +19,7 @@ exports.obtenerSuelo = async (req,res)=>{
       
     
         try {
-          const rows = await db.query('SELECT su.* FROM conglomerado c JOIN subparcela s ON c.id = s.idConglomerado  JOIN suelo su ON s.id = su.idSubParcela WHERE c.id = ? ', [id]);
+          const rows = await db.query('SELECT su.* FROM conglomerado c JOIN subparcela s ON c.id = s.idConglomerado  JOIN suelo su ON s.id = su.idSubParcela WHERE c.id = ?; ', [id]);
           res.json(rows);
         } catch (error) {
           console.error(error);
