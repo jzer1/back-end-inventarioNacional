@@ -19,10 +19,7 @@ exports.obtenerColeccionBotanico = async (req, res) => {
   
   
     try {
-      const [rows] = await db.query(
-        'SELECT cb.id, cb.tamano, cb.nombre_comun, cb.nombre_cientifico, cb.observaciones_individuo, cb.foto, cb.idArbol FROM conglomerado c JOIN subparcela s ON c.id = s.idConglomerado JOIN arbol a ON s.id = a.idSubParcela JOIN coleccionbotanica cb on cb.idArbol = a.id WHERE c.id = ?;',
-        [id]
-      );
+      const rows = await db.query('SELECT cb.id, cb.tamano, cb.nombre_comun, cb.nombre_cientifico, cb.observaciones_individuo, cb.foto, cb.idArbol FROM conglomerado c JOIN subparcela s ON c.id = s.idConglomerado JOIN arbol a ON s.id = a.idSubParcela JOIN coleccionbotanica cb on cb.idArbol = a.id WHERE c.id = ?;',[id]);
       res.json(rows);
     } catch (error) {
       console.error('Error al obtener la colección botánica:', error);
@@ -40,10 +37,7 @@ exports.obtenerColeccionBotanico = async (req, res) => {
   
   
     try {
-      const [rows] = await db.query(
-        'SELECT cb.id, cb.tamano, cb.nombre_comun, cb.nombre_cientifico, cb.observaciones_individuo, cb.foto, cb.idArbol FROM conglomerado c JOIN subparcela s ON c.id = s.idConglomerado JOIN arbol a ON s.id = a.idSubParcela JOIN coleccionbotanica cb on cb.idArbol = a.id WHERE c.id = ? AND s.numero = ?;',
-        [id, idSubParcela]
-      );
+      const rows = await db.query('SELECT cb.id, cb.tamano, cb.nombre_comun, cb.nombre_cientifico, cb.observaciones_individuo, cb.foto, cb.idArbol FROM conglomerado c JOIN subparcela s ON c.id = s.idConglomerado JOIN arbol a ON s.id = a.idSubParcela JOIN coleccionbotanica cb on cb.idArbol = a.id WHERE c.id = ? AND s.numero = ?;',[id, idSubParcela]);
       res.json(rows);
     } catch (error) {
       console.error('Error al obtener por subparcela:', error);

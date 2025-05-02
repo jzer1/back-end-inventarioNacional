@@ -16,7 +16,7 @@ exports.obtenerArboles = async(req, res)=>{
     const { id } = req.params; 
 
     if (!id) {
-        return res.status(400).json({ error: 'Falta el campo posestrato' });
+        return res.status(400).json({ error: 'Falta el campo' });
     }
   
 
