@@ -54,11 +54,8 @@ exports.obtenerColeccionBotanico = async (req, res) => {
 
   exports.obtenerCantidadColeccionBotanico = async (req, res) => {
     try {
-      const [rows] = await db.query(
-        'SELECT COUNT(id) AS total_coleccion FROM coleccionbotanica;'
-      
-      );
-      res.json(rows[0]);
+      const [rows] = await db.query('SELECT COUNT(id) AS total_coleccion FROM coleccionbotanica;');
+      res.json(rows);
     } catch (error) {
       console.error('Error al contar la colección botánica:', error);
       res.status(500).json({ error: 'Error del servidor' });

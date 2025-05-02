@@ -48,12 +48,8 @@ exports.obtenerSubParcelaSuelo = async(req,res)=>{
 
 exports.obtenerCantidadSuelos = async (req, res) => {
     try {
-      const [rows] = await db.query(
-        'SELECT COUNT(id) AS total_suelos FROM suelo;'
-  
-      );
-  
-      res.status(200).json(rows[0]);
+      const [rows] = await db.query('SELECT COUNT(id) AS total_suelos FROM suelo;');
+      res.json(rows);
     } catch (error) {
       console.error('Error al obtener la cantidad de suelos:', error);
       res.status(500).json({ error: 'Error del servidor al obtener la cantidad de suelos' });
