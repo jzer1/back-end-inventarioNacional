@@ -123,15 +123,8 @@ exports.obteneFormaArbol = async(req,res)=>{
 
 //consulta la cantidad de arboles de un conglomerado 
 exports.obtenerCantidadArboles = async(req,res)=>{
-    const { id } = req.params; 
-
-    if (!id) {
-        return res.status(400).json({ error: 'Falta el campo posestrato' });
-    }
-  
-
     try {
-      const rows = await db.query('SELECT COUNT(a.id) AS total_arboles FROM conglomerado c JOIN subparcela s ON c.id = s.idConglomerado JOIN arbol a ON s.id = a.idSubparcela WHERE c.id = ?;', [id]);
+      const rows = await db.query('SELECT COUNT(id) AS total_arboles FROM arbol;');
       res.json(rows);
     } catch (error) {
       console.error(error);
