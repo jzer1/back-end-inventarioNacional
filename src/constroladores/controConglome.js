@@ -36,7 +36,7 @@ exports.obtenerConglomerado = async (req, res) => {
   
 
     try {
-      const rows = await db.query('SELECT * FROM conglomerado WHERE id = ?', [id]);
+      const rows = await db.query('SELECT * FROM conglomerado WHERE id = ?',[id]);
       res.json(rows);
     } catch (error) {
       console.error(error);
