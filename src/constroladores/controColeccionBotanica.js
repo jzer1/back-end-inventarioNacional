@@ -53,17 +53,10 @@ exports.obtenerColeccionBotanico = async (req, res) => {
   
 
   exports.obtenerCantidadColeccionBotanico = async (req, res) => {
-    const { id } = req.params;
-
-    if (!id) {
-        return res.status(400).json({ error: 'Falta el campo ' });
-    }
-  
-  
     try {
       const [rows] = await db.query(
-        'SELECT COUNT(cb.id) AS total_coleccion FROM conglomerado c JOIN subparcela s ON c.id = s.idConglomerado JOIN ColeccionBotanico cb ON s.id = cb.idSubParcela WHERE c.id = ?',
-        [id]
+        'SELECT COUNT(id) AS total_coleccion FROM coleccionbotanica;'
+      
       );
       res.json(rows[0]);
     } catch (error) {

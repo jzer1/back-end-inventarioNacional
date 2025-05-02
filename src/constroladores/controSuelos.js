@@ -47,16 +47,10 @@ exports.obtenerSubParcelaSuelo = async(req,res)=>{
 
 
 exports.obtenerCantidadSuelos = async (req, res) => {
-    const { id } = req.params;
-  
-    if (!id) {
-      return res.status(400).json({ error: 'Falta el campo id del conglomerado' });
-    }
-  
     try {
       const [rows] = await db.query(
-        'SELECT COUNT(su.id) AS total_suelos FROM conglomerado c JOIN subparcela s ON c.id = s.idConglomerado JOIN suelo su ON s.id = su.idSubParcela WHERE c.id = ?',
-        [id]
+        'SELECT COUNT(id) AS total_suelos FROM suelo;'
+  
       );
   
       res.status(200).json(rows[0]);
