@@ -6,12 +6,13 @@ router.get('/obtener-id-conglomerado',controladorConglomerado.obtenerIdConglomer
 router.get('/obtener-conglomerado/:id',controladorConglomerado.obtenerConglomerado)
 
 router.get('/obtener-subparcelas-conglomerado/:id',controladorConglomerado.obtenerSubParcelasConglomerado)
-router.post('/agregar-conglomerado/:latitud/:longitud/:observaciones/:region/:posEstrato',controladorConglomerado.agregarConglomerado)
 //
 router.get('/ObtenerConglomeradoPorRegion/:region',controladorConglomerado.obtenerConglomeradoPorRegion)
 router.get('/ObtenerConglomeradoPorPostEstrato/:PostEstrato',controladorConglomerado.obtenerConglomeradoPorPostEstrato)
 //
 router.get('/ObtenerConglomeradoPorPostEstratoYRegion/:PostEstrato/:region', controladorConglomerado.obtenerConglomeradoPorPostEstratoYRegion)
-
 router.get('/ObtenerTodosIdConglomerados',controladorConglomerado.obtenerConglomeradoID)
+router.post('/agregar-conglomerado/:latitud/:longitud/:observaciones/:region/:posEstrato',controladorConglomerado.agregarConglomerado)
+
+
 module.exports = router

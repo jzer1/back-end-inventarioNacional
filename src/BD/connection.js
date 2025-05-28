@@ -1,28 +1,21 @@
-const mysql = require('mysql2/promise'); // Usa mysql2/promise
+const { Pool } = require('pg');
+require('dotenv').config(); // Asegúrate de tener esto si usas variables de entorno
 
-const {
-  DB_HOST,
-  DB_NAME,
-  DB_PASS,
-  DB_PORT,
-  DB_USER 
-} = require('../../src/config');
-
-
-const pool = mysql.createPool({
-  host: DB_HOST,
-  user: DB_USER,
-  password: DB_PASS,
-  database: DB_NAME,
-  port: DB_PORT,
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false, // Necesario para conexiones a Neon u otros servicios que requieren SSL
+  },
 });
 
 module.exports = {
   query: async (sql, params) => {
-    const [rows] = await pool.query(sql, params);
-    return rows;
+    const client = await pool.connect();
+    try {
+      const res = await client.query(sql, params);
+      return res.rows;
+    } finally {
+      client.release();
+    }
   }
 };
