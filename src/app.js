@@ -1,5 +1,5 @@
 const express = require('express')
-const config = require('./config')
+
 const cors = require('cors');
 const morgan = require('morgan');
 
@@ -30,7 +30,7 @@ const especie = require('./modulos/inventario/rutasEspecies')
 const ColeccionBotanica = require('./modulos/inventario/rutasColeccionBotanica')
 
 //puerto
-app.set('port', config.app.port)
+
 
 //rutas de prueba
 app.use('/api/inventario', inventario)
