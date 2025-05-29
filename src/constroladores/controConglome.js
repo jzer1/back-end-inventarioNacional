@@ -54,7 +54,7 @@ exports.obtenerConglomeradoPorRegion = async(req,res)=>{
 
 
   try {
-    const rows = await db.query('SELECT c.latitud, c.longitud, c.id, c.postestrato, r.nombre FROM conglomerado c JOIN region r N c.idregion = r.id WHERE r.nombre = $1;', [region]);
+    const rows = await db.query('SELECT c.latitud, c.longitud, c.id, c.postestrato, r.nombre FROM conglomerado c JOIN region r ON c.idregion = r.id WHERE r.nombre = $1;', [region]);
     res.json(rows);
   } catch (error) {
     console.error(error);
