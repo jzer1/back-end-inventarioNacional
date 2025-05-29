@@ -2,7 +2,7 @@ const db = require('../BD/connection')
 
 exports.obtenerTodosColeccionBotanico = async (req, res) => {
   try {
-    const rows = await db.query('SELECT * FROM coleccionbotanica');
+    const rows = await db.query('SELECT cb.Id, cb.NombreComun, cb.Foto, ec.NombreCientifico AS EspecieColeccion, t.Descripcion AS Tamaño FROM ColeccionBotanica cb JOIN EspecieColeccionBotanica ec ON cb.IdEspecieColeccion = ec.Id JOIN Tamano t ON cb.IdTamano = t.Id;');
     res.json(rows);
   } catch (error) {
     console.error(error);
@@ -19,7 +19,7 @@ exports.obtenerColeccionBotanico = async (req, res) => {
   
   
     try {
-      const rows = await db.query('SELECT cb.id, cb.tamano, cb.nombre_comun, cb.nombre_cientifico, cb.observaciones_individuo, cb.foto, cb.idArbol FROM conglomerado c JOIN subparcela s ON c.id = s.idConglomerado JOIN arbol a ON s.id = a.idSubParcela JOIN coleccionbotanica cb on cb.idArbol = a.id WHERE c.id = ?;',[id]);
+      const rows = await db.query('SELECT cb.Id, cb.NombreComun, cb.Foto, ec.NombreCientifico AS EspecieColeccion, t.Descripcion AS Tamano FROM ColeccionBotanica cb JOIN EspecieColeccionBotanica ec ON cb.IdEspecieColeccion = ec.Id JOIN Tamano t ON cb.IdTamano = t.Id JOIN Arbol a ON cb.IdArbol = a.Id JOIN Sub_parcela sp ON a.IdSubParcela = sp.Id JOIN Conglomerado c ON sp.IdConglomerado = c.Id WHERE c.Id = $1;',[id]);
       res.json(rows);
     } catch (error) {
       console.error('Error al obtener la colección botánica:', error);
@@ -37,7 +37,7 @@ exports.obtenerColeccionBotanico = async (req, res) => {
   
   
     try {
-      const rows = await db.query('SELECT cb.id, cb.tamano, cb.nombre_comun, cb.nombre_cientifico, cb.observaciones_individuo, cb.foto, cb.idArbol FROM conglomerado c JOIN subparcela s ON c.id = s.idConglomerado JOIN arbol a ON s.id = a.idSubParcela JOIN coleccionbotanica cb on cb.idArbol = a.id WHERE c.id = ? AND s.numero = ?;',[id, idSubParcela]);
+      const rows = await db.query('SELECT cb.Id, cb.NombreComun, cb.Foto, ec.NombreCientifico AS EspecieColeccion, t.Descripcion AS Tamano FROM ColeccionBotanica cb JOIN EspecieColeccionBotanica ec ON cb.IdEspecieColeccion = ec.Id JOIN Tamano t ON cb.IdTamano = t.Id JOIN Arbol a ON cb.IdArbol = a.Id JOIN Sub_parcela sp ON a.IdSubParcela = sp.Id JOIN Conglomerado c ON sp.IdConglomerado = c.Id WHERE c.Id = $1 and sp.Numero = $2;',[id, idSubParcela]);
       res.json(rows);
     } catch (error) {
       console.error('Error al obtener por subparcela:', error);

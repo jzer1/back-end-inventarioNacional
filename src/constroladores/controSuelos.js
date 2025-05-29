@@ -2,7 +2,7 @@ const db = require('../BD/connection')
 
 exports.obtenerTodosSuelo = async (req, res) => {
   try {
-    const rows = await db.query('SELECT * FROM suelo');
+    const rows = await db.query('SELECT Id, Carbono, Color, Fertilidad from Suelo');
     res.json(rows);
   } catch (error) {
     console.error(error);
@@ -19,7 +19,11 @@ exports.obtenerSuelo = async (req,res)=>{
       
     
         try {
-          const rows = await db.query('SELECT su.* FROM conglomerado c JOIN subparcela s ON c.id = s.idConglomerado  JOIN suelo su ON s.id = su.idSubParcela WHERE c.id = ?; ', [id]);
+          const rows = await db.query(  `SELECT s.Id, s.Carbono, s.Color, s.Fertilidad 
+       FROM Suelo s 
+       JOIN Sub_parcela sp ON s.IdSubParcela = sp.Id 
+       JOIN Conglomerado c ON sp.IdConglomerado = c.Id 
+       WHERE c.Id = $1;`, [id]);
           res.json(rows);
         } catch (error) {
           console.error(error);
@@ -36,7 +40,11 @@ exports.obtenerSubParcelaSuelo = async(req,res)=>{
   
 
     try {
-      const rows = await db.query('SELECT su.* FROM conglomerado c JOIN subparcela s ON c.id = s.idConglomerado  JOIN suelo su ON s.id = su.idSubParcela WHERE c.id = ? and s.id=? ', [id , idPar]);
+      const rows = await db.query( `SELECT s.Id, s.Carbono, s.Color, s.Fertilidad 
+       FROM Suelo s 
+       JOIN Sub_parcela sp ON s.IdSubParcela = sp.Id 
+       JOIN Conglomerado c ON sp.IdConglomerado = c.Id 
+       WHERE c.Id = $1 AND sp.Numero = $2;`, [id , idPar]);
       res.json(rows);
     } catch (error) {
       console.error(error);

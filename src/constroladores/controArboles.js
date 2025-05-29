@@ -2,7 +2,7 @@ const db = require('../BD/connection');
 
 exports.obtenerTodosArboles = async (req, res) => {
   try {
-    const rows = await db.query('SELECT * FROM arbol');
+    const rows = await db.query('SELECT a.Id, a.NombreComun, a.Condicion, a.Azimut, a.Distancia, a.Numero_fustes, a.Diametro, a.Altura_fuste, a.Forma_fuste, a.Altura_total, a.Diametro_fuste, a.Diametro_copa, e.NombreCientifico AS Especie, t.Descripcion AS Tamano FROM Arbol a JOIN  Especie e ON a.IdEspecie = e.Id JOIN Tamano t ON a.IdTamano = t.Id;');
     res.json(rows);
   } catch (error) {
     console.error(error);
@@ -21,7 +21,7 @@ exports.obtenerArboles = async(req, res)=>{
   
 
     try {
-      const rows = await db.query('SELECT a.* FROM conglomerado c JOIN subparcela s ON c.id = s.idConglomerado  JOIN arbol a ON s.id = a.idSubparcela WHERE c.id = ?', [id]);
+      const rows = await db.query('SELECT a.Id, a.NombreComun, a.Condicion, a.Azimut, a.Distancia, a.Numero_fustes, a.Diametro, a.Altura_fuste, a.Forma_fuste, a.Altura_total, a.Diametro_fuste, a.Diametro_copa, e.NombreCientifico AS Especie, t.Descripcion AS Tamano FROM Arbol a JOIN  Especie e ON a.IdEspecie = e.Id JOIN Tamano t ON a.IdTamano = t.Id JOIN Sub_parcela sp ON a.IdSubParcela = sp.Id JOIN Conglomerado c ON sp.IdConglomerado = c.Id WHERE c.Id = $1;', [id]);
       res.json(rows);
     } catch (error) {
       console.error(error);
@@ -58,7 +58,18 @@ exports.obtenerSubParcelaArbol = async(req,res)=>{
   
 
     try {
-      const rows = await db.query('SELECT a.* FROM conglomerado c JOIN subparcela s ON c.id = s.idConglomerado  JOIN arbol a ON s.id = a.idSubparcela WHERE c.id = ? and s.numero=?', [id, Parc]);
+      const rows = await db.query(`
+      SELECT a.Id, a.NombreComun, a.Condicion, a.Azimut, a.Distancia, a.Numero_fustes, 
+             a.Diametro, a.Altura_fuste, a.Forma_fuste, a.Altura_total, 
+             a.Diametro_fuste, a.Diametro_copa, 
+             e.NombreCientifico AS Especie, t.Descripcion AS Tamano 
+      FROM Arbol a 
+      JOIN Especie e ON a.IdEspecie = e.Id 
+      JOIN Tamano t ON a.IdTamano = t.Id 
+      JOIN Sub_parcela sp ON a.IdSubParcela = sp.Id 
+      JOIN Conglomerado c ON sp.IdConglomerado = c.Id 
+      WHERE c.Id = $1 AND sp.Numero = $2;
+    `, [id, Parc]);
       res.json(rows);
     } catch (error) {
       console.error(error);
