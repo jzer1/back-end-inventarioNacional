@@ -34,7 +34,7 @@ app.set('port', config.app.port)
 
 //rutas de prueba
 app.use('/api/inventario', inventario)
-app.use('/api', testRoutes);
+app.use('/test', testRoutes);
 
 //rutas de conglomerado
 app.use('/api/conglomerado', conglomerado)
