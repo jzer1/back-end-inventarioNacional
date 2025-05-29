@@ -4,7 +4,7 @@ const db = require('../BD/connection');
 //obtiene todos los conglomerados 
 exports.obtenerIdConglomerado = async (req, res) => {
   try {
-    const rows = await db.query('SELECT * FROM conglomerado');
+    const rows = await db.query('SELECT c.latitud, c.longitud, c.postestrato, r.nombre FROM conglomerado c JOIN region r ON c.idregion = r.id');
     res.json(rows);
   } catch (error) {
     console.error(error);
