@@ -74,7 +74,7 @@ exports.obtenerConglomeradoPorPostEstrato = async(req,res)=>{
 
 
   try {
-    const rows = await db.query('select * from conglomerado where posEstrato = ?', [PostEstrato]);
+    const rows = await db.query('select * from conglomerado where postestrato = $1', [PostEstrato]);
     res.json(rows);
   } catch (error) {
     console.error(error);
