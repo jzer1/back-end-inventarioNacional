@@ -57,33 +57,54 @@ exports.obtenerColeccionBotanico = async (req, res) => {
   };
   
 
-  exports.agregarColeccionBotanico = async (req, res) => {
+exports.agregarColeccionBotanico = async (req, res) => {
+  let colecciones = req.body;
+
+  // Si recibes un solo objeto, conviértelo en array
+  if (!Array.isArray(colecciones)) {
+    colecciones = [colecciones];
+  }
+
+  const errores = [];
+  const exitos = [];
+
+  for (const [index, coleccion] of colecciones.entries()) {
     const {
-      tamano,
-      nombre_comun,
-      nombre_cientifico,
-      observaciones_individuo,
+      nombrecomun,
       foto,
-      idArbol,
-      idSubParcela
-    } = req.body;
-  
-    if (!tamano || !nombre_comun || !nombre_cientifico || !observaciones_individuo || !foto || !idArbol || !idSubParcela) {
-      return res.status(400).json({ error: 'Faltan campos obligatorios' });
+      idarbol,
+      especiecoleccion,
+      tamano
+    } = coleccion;
+
+    // Validación
+    if (!nombrecomun || idarbol == null || !especiecoleccion || !tamano) {
+      errores.push({ index, error: 'Faltan campos obligatorios de la colección botánica' });
+      continue;
     }
-  
+
     try {
       const result = await db.query(
-        'INSERT INTO ColeccionBotanico (tamano, nombre_comun, nombre_cientifico, observaciones_individuo, foto, idArbol, idSubParcela) ' +
-        'VALUES (?, ?, ?, ?, ?, ?, ?)',
-        [tamano, nombre_comun, nombre_cientifico, observaciones_individuo, foto, idArbol, idSubParcela]
+        `INSERT INTO public.coleccionbotanica 
+        (nombrecomun, foto, idarbol, idespeciecoleccion, idtamano) 
+        VALUES ($1, $2, $3, 
+          (SELECT id FROM especiecoleccionbotanica WHERE nombrecientifico = $4), 
+          (SELECT id FROM tamano WHERE descripcion = $5)
+        )
+        RETURNING id`,
+        [nombrecomun, foto, idarbol, especiecoleccion, tamano]
       );
-  
+
       res.status(201).json({ mensaje: 'Registro agregado exitosamente', idInsertado: result.insertId });
-    } catch (error) {
-      console.error('Error al agregar colección botánica:', error);
-      res.status(500).json({ error: 'Error del servidor' });
+    } catch (err) {
+      console.error(`Error en fila ${index}:`, err);
+      errores.push({ index, error: 'Error del servidor al insertar la colección botánica' });
     }
-  };
-  
-  
+  }
+
+  if (errores.length > 0) {
+    return res.status(207).json({ mensaje: "Algunas colecciones no se pudieron insertar", exitos, errores });
+  }
+
+  res.status(201).json({ mensaje: 'Todas las colecciones fueron insertadas exitosamente', exitos });
+};

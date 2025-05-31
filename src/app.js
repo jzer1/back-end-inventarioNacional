@@ -51,6 +51,8 @@ app.use('/api/especie',especie)
 //rutas de ColeccionBotanica
 app.use('/api/ColeccionBotanica',ColeccionBotanica)
 
+
+
 // Ruta raíz para respuesta básica
 app.get('/', (req, res) => {
     res.send('API Inventario Forestal funcionando correctamente 🚀');

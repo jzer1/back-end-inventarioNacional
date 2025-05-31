@@ -124,20 +124,112 @@ exports.obtenerSubParcelasConglomerado = async (req,res)=>{
 
 //agrega un nuevo conglomerado
 exports.agregarConglomerado = async (req, res) => {
-    const { latitud, longitud, observaciones, region, posEstrato } = req.params;
-  
-    if (!latitud || !longitud || !observaciones || !region || !posEstrato) {
-      return res.status(400).json({ error: 'Faltan campos obligatorios' });
+  let conglomerado = req.body;
+
+  // Si recibes un solo objeto, conviértelo en array
+  if (!Array.isArray(conglomerado)) {
+    conglomerado = [conglomerado];
+  }
+
+  const errores = [];
+  const exitos = [];
+
+  for (const [index, cong] of conglomerado.entries()) {
+    const {
+      latitud, longitud, postestrato, fechainicial, fechafinal, idcoinvestigador, region
+    } = cong;
+
+    // Validación
+    if (!postestrato || latitud == null || longitud == null || idcoinvestigador == null || !fechainicial || !fechafinal || !region) {
+      errores.push({ index, error: 'Faltan campos obligatorios del conglomerado' });
+      continue;
     }
-  
+
     try {
       const result = await db.query(
-        'INSERT INTO conglomerado (latitud, longitud, observaciones, region, posEstrato) VALUES (?, ?, ?, ?, ?)',
-        [latitud, longitud, observaciones, region, posEstrato]
+        `INSERT INTO conglomerado (latitud, longitud, postestrato, fechainicial, fechafinal, idregion, idcoinvestigador) 
+         VALUES ($1, $2, $3, $4, $5, (SELECT id FROM region WHERE nombre = $6), 
+           $7) 
+         RETURNING id`, 
+        [latitud, longitud, postestrato, fechainicial, fechafinal,region , idcoinvestigador]
       );
-      res.status(201).json({ mensaje: 'Conglomerado agregado exitosamente', idInsertado: result.insertId });
-    } catch (error) {
-      console.error(error); 
-      res.status(500).json({ error: 'Error del servidor' });
+      
+
+      if (result && result.length > 0 && result[0].id != null) {
+        const newConglomeradoId = result[0].id; 
+        exitos.push({ index, id: newConglomeradoId, mensaje: 'Conglomerado insertado exitosamente' });
+      }
+
+    } catch (err) {
+      console.error(`Error en fila ${index}:`, err);
+      errores.push({ index, error: 'Error del servidor al insertar conglomerado', detalle: err.message });
     }
-}
+  }
+
+  if (errores.length > 0) {
+    return res.status(207).json({
+      mensaje: "Algunos conglomerados no se pudieron insertar",
+      exitos,
+      errores
+    });
+  }
+
+  return res.status(201).json({
+    mensaje: 'Todos los conglomerados fueron insertados exitosamente',
+    exitos
+  });
+};
+
+
+//agrega una nueva subparcela
+exports.agregarSubparcela = async (req, res) => {
+  let subparcelas = req.body;
+
+  if (!Array.isArray(subparcelas)) {
+    subparcelas = [subparcelas];
+  }
+
+  const errores = [];
+  const exitos = [];
+
+  for (const [index, item] of subparcelas.entries()) {
+    const { latitud, longitud, numero, idconglomerado } = item;
+
+    if (
+      latitud == null || 
+      longitud == null || 
+      numero == null || 
+      idconglomerado == null
+    ) {
+      errores.push({ index, error: 'Faltan o son inválidos algunos campos de la subparcela' });
+      continue;
+    }
+
+    try {
+      const result = await db.query(
+        `INSERT INTO sub_parcela (latitud, longitud, numero, idconglomerado)
+         VALUES ($1, $2, $3, $4)
+         RETURNING id`,
+        [latitud, longitud, numero, idconglomerado]
+      );
+
+      exitos.push({ index, idInsertado: result.id });
+    } catch (err) {
+      console.error(`Error en fila ${index}:`, err);
+      errores.push({ index, error: err.message || 'Error del servidor al insertar subparcela' });
+    }
+  }
+
+  if (errores.length > 0) {
+    return res.status(207).json({
+      mensaje: "Algunas subparcelas no se pudieron insertar",
+      exitos,
+      errores
+    });
+  }
+
+  return res.status(201).json({
+    mensaje: 'Todas las subparcelas fueron insertadas exitosamente',
+    exitos
+  });
+};

@@ -66,25 +66,48 @@ exports.obtenerCantidadSuelos = async (req, res) => {
   
 
 exports.agregarSuelo = async (req, res) => {
-    const { carbono, color, fertilidad, observaciones, idSubParcela } = req.body;
-  
-    // ✔ Validación clara y completa
-    if (!carbono || !color || !fertilidad || !observaciones || !idSubParcela) {
-      return res.status(400).json({ error: 'Faltan campos obligatorios' }); // mensaje corregido
+  let suelos = req.body;
+
+  // Si el body es un solo objeto, lo convertimos en array
+  if (!Array.isArray(suelos)) {
+    suelos = [suelos];
+  }
+
+  const errores = [];
+  const exitos = [];
+
+  for (const [index, suelo] of suelos.entries()) {
+    const {
+      color,
+      carbono,
+      fertilidad,
+      idsubparcela
+    } = suelo;
+
+    // Validación
+    if (!color || carbono == null || fertilidad == null || idsubparcela == null) {
+      errores.push({ index, error: 'Faltan campos obligatorios del suelo' });
+      continue;
     }
-  
+
     try {
       const result = await db.query(
-        'INSERT INTO suelo (carbono, color, fertilidad, observaciones, idSubParcela) VALUES (?, ?, ?, ?, ?)',
-        [carbono, color, fertilidad, observaciones, idSubParcela]
+        `INSERT INTO suelo (color, carbono, fertilidad, idsubparcela) VALUES ($1, $2, $3, $4) RETURNING id`,
+        [color, carbono, fertilidad, idsubparcela]
       );
-      res.status(201).json({
-        mensaje: 'Suelo agregado exitosamente', // mensaje corregido para que sea coherente
-        idInsertado: result.insertId
-      });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Error del servidor' });
+
+      res.status(201).json({ mensaje: 'Registro agregado exitosamente', idInsertado: result.insertId });
+    } catch (err) {
+      console.error(`Error al insertar suelo en fila ${index}:`, err);
+      errores.push({ index, error: 'Error del servidor al insertar el suelo' });
     }
-  };
+  }
+
+  if (errores.length > 0) {
+    return res.status(207).json({ mensaje: "Algunos suelos no se pudieron insertar", exitos, errores });
+  }
+
+  res.status(201).json({ mensaje: 'Todos los suelos fueron insertados exitosamente', exitos });
+};
+
   

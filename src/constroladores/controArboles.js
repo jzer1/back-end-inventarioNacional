@@ -146,36 +146,85 @@ exports.obtenerCantidadArboles = async(req,res)=>{
 
 //agrega un arbol
 exports.agregarArbol = async (req, res) => {
+  const arboles = req.body;
+
+  if (!Array.isArray(arboles) || arboles.length === 0) {
+    return res.status(400).json({ error: "Se esperaba un arreglo de árboles." });
+  }
+
+  const errores = [];
+  const resultados = [];
+
+  for (const [i, arbol] of arboles.entries()) {
     const {
-      tamano, condicion, azimut, distancia, numero_fustes,
-      diametro, altura_fuste, forma_fuste, altura_total,
-      diametro_fuste, diametro_copa, observaciones,
-      idEspecie, idSubParcela
-    } = req.body;
-  
-    // Validación básica
+      nombrecomun,
+      condicion,
+      azimut,
+      distancia,
+      numero_fustes,
+      diametro,
+      altura_fuste,
+      forma_fuste,
+      altura_total,
+      diametro_fuste,
+      diametro_copa,
+      especie,
+      idsubparcela,
+      tamano
+    } = arbol;
+
+    // Validar campos
     if (
-      !tamano || !condicion || !azimut || !distancia || !numero_fustes ||
-      !diametro || !altura_fuste || !forma_fuste || !altura_total ||
-      !diametro_fuste || !diametro_copa || !idEspecie || !idSubParcela
+      !nombrecomun || !condicion || azimut == null || distancia == null || numero_fustes == null ||
+      diametro == null || altura_fuste == null || !forma_fuste || altura_total == null ||
+      diametro_fuste == null || diametro_copa == null || !especie || !idsubparcela || !tamano
     ) {
-      return res.status(400).json({ error: 'Faltan campos obligatorios del árbol' });
+      errores.push({ index: i, error: "Faltan campos obligatorios" });
+      continue;
     }
-  
+
     try {
       const result = await db.query(
-        'INSERT INTO arbol (tamano, condicion, azimut, distancia, numero_fustes, diametro, altura_fuste, forma_fuste, altura_total, diametro_fuste, diametro_copa, observaciones, idEspecie, idSubParcela) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        `INSERT INTO public.arbol (
+          nombrecomun, condicion, azimut, distancia, numero_fustes, diametro,
+          altura_fuste, forma_fuste, altura_total, diametro_fuste, diametro_copa,
+          idespecie, idsubparcela, idtamano
+        )
+        VALUES (
+          $1, $2, $3, $4, $5, $6,
+          $7, $8, $9, $10, $11,
+          (SELECT id FROM especie WHERE nombrecientifico = $12),
+          $13,
+          (SELECT id FROM tamano WHERE descripcion = $14)
+        )
+        RETURNING id;`,
         [
-          tamano, condicion, azimut, distancia, numero_fustes,
-          diametro, altura_fuste, forma_fuste, altura_total,
-          diametro_fuste, diametro_copa, observaciones,
-          idEspecie, idSubParcela
+          nombrecomun,
+          condicion,
+          azimut,
+          distancia,
+          numero_fustes,
+          diametro,
+          altura_fuste,
+          forma_fuste,
+          altura_total,
+          diametro_fuste,
+          diametro_copa,
+          especie,
+          idsubparcela,
+          tamano
         ]
       );
-      res.status(201).json({ mensaje: 'Árbol agregado exitosamente', idInsertado: result.insertId });
+
+      res.status(201).json({ mensaje: 'Registro agregado exitosamente', idInsertado: result.insertId });
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Error del servidor' });
+      errores.push({ index: i, error: error.message });
     }
-  };
-  
+  }
+
+  if (errores.length > 0) {
+    return res.status(207).json({ mensaje: "Algunos registros no se insertaron", resultados, errores });
+  }
+
+  return res.status(201).json({ mensaje: "Todos los árboles insertados correctamente", resultados });
+};
