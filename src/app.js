@@ -29,6 +29,7 @@ const especie = require('./modulos/inventario/rutasEspecies')
 //archivo ColeccionBotanica
 const ColeccionBotanica = require('./modulos/inventario/rutasColeccionBotanica')
 
+const Coinvestigador = require('./modulos/inventario/rutaCoinvestigador')
 //puerto
 
 
@@ -51,7 +52,7 @@ app.use('/api/especie',especie)
 //rutas de ColeccionBotanica
 app.use('/api/ColeccionBotanica',ColeccionBotanica)
 
-
+app.use('/api/coinvestigador', Coinvestigador)
 
 // Ruta raíz para respuesta básica
 app.get('/', (req, res) => {
