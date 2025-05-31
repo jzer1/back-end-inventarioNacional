@@ -93,7 +93,7 @@ exports.obtenerConglomeradoPorPostEstratoYRegion = async(req,res)=>{
 
 
   try {
-    const rows = await db.query('select * from conglomerado where posEstrato = ? and region = ?', [PostEstrato, region]);
+    const rows = await db.query('SELECT c.latitud, c.longitud, c.id, c.postestrato, r.nombre FROM conglomerado c JOIN region r ON c.idregion = r.id WHERE c.postestrato = $1 AND  r.nombre = $2;', [PostEstrato, region]);
     res.json(rows);
   } catch (error) {
     console.error(error);
